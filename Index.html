@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aarniya's Biryani Feast - Digital Menu</title>
+  <style>
+    :root {
+      --bg: #f6f1e4;
+      --card: #faf6ec;
+      --accent: #586239;
+      --accent-dark: #434c29;
+      --terracotta: #8e5235;
+      --ink: #1e1e1b;
+      --muted: #5b5b52;
+      --border: #d9d1be;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .header {
+      background: var(--accent);
+      color: #fff;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+    }
+    .header h1 { font-size: 1.5rem; margin-bottom: 4px; }
+    .header p { font-size: 0.9rem; opacity: 0.92; }
+
+    .step-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent-dark);
+    }
+
+    .rice-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .rice-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      padding: 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .rice-label input { transform: scale(1.2); accent-color: var(--terracotta); }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+    }
+    .item-card.selected {
+      border-color: var(--terracotta);
+      background: #fff5ef;
+    }
+    .item-name { font-weight: 700; font-size: 0.98rem; color: var(--ink); }
+    .item-sub { display: block; font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .item-price { font-weight: 700; color: var(--terracotta); font-size: 1rem; white-space: nowrap; margin-left: 8px; }
+
+    #sideAndAddBox {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .side-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 8px 0 12px;
+    }
+    .side-btn {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .side-btn.active {
+      background: var(--terracotta);
+      color: #fff;
+      border-color: var(--terracotta);
+    }
+    .add-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: var(--accent-dark);
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #comboAndCheckoutSection { display: none; }
+    .selected-item-banner {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 0.92rem;
+    }
+    .combo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .combo-btn {
+      padding: 12px 8px;
+      border-radius: 10px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+    }
+    .combo-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .customer-form {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: var(--ink);
+    }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .loc-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .loc-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+      background: #fff;
+      color: var(--accent-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+    .loc-status {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .summary-box {
+      background: #fff;
+      border: 1px dashed var(--accent);
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+    .order-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: var(--terracotta);
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .note { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Aarniya's Biryani Feast</h1>
+      <p>100% Home Cooked • No Food Color • No Tasting Salt</p>
+    </div>
+
+    <!-- Step 1: Mandatory Rice Selection -->
+    <div class="step-box">
+      <div class="step-title">1. Select Rice Base (Mandatory)</div>
+      <div class="rice-options">
+        <label class="rice-label">
+          <input type="radio" name="riceType" value="Bagara Rice" required onchange="refreshAll()">
+          <span>Bagara Rice (బగారా రైస్)</span>
+        </label>
+        <label class="rice-label">
+          <input type="radio" name="riceType" value="White Rice" required onchange="refreshAll()">
+          <span>White Rice (వైట్ రైస్)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Step 2: 12 Menu Items + Side Dish + Add Step -->
+    <div class="step-box">
+      <div class="step-title">2. Choose One of 12 Varieties</div>
+      <div class="items-grid" id="itemsGrid"></div>
+
+      <div id="sideAndAddBox">
+        <div id="sideDishBlock">
+          <div class="step-title" style="margin-bottom:4px;">Choose Side Dish (Chicken Fry / Chicken Curry):</div>
+          <div class="side-options">
+            <button type="button" class="side-btn active" onclick="selectSideDish('Chicken Fry', this)">Chicken Fry</button>
+            <button type="button" class="side-btn" onclick="selectSideDish('Chicken Curry', this)">Chicken Curry</button>
+          </div>
+        </div>
+        <button type="button" class="add-btn" onclick="addItemAndGoToCombos()">Add Item &amp; Proceed to Combos →</button>
+      </div>
+    </div>
+
+    <!-- Step 3: Combo Selection + Customer Details + Final WhatsApp Order -->
+    <div class="step-box" id="comboAndCheckoutSection">
+      <div class="step-title">3. Select Combo &amp; Customer Details</div>
+      <div class="selected-item-banner" id="addedItemSummary"></div>
+
+      <div class="combo-grid">
+        <button type="button" class="combo-btn active" onclick="selectCombo(1, 0, this)">1 Combo</button>
+        <button type="button" class="combo-btn" onclick="selectCombo(2, 20, this)">2 Combos<br><small>Save ₹20</small></button>
+        <button type="button" class="combo-btn" onclick="selectCombo(3, 50, this)">3 Combos<br><small>Save ₹50</small></button>
+      </div>
+
+      <div class="customer-form">
+        <div class="form-group">
+          <label for="custName">Customer Name *</label>
+          <input type="text" id="custName" placeholder="Enter customer name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="custPhone">Phone Number *</label>
+          <input type="tel" id="custPhone" placeholder="10-digit mobile number" required />
+        </div>
+
+        <div class="form-group">
+          <label for="custArea">Area *</label>
+          <input type="text" id="custArea" placeholder="e.g., Clock Tower, Nalgonda" required />
+        </div>
+
+        <div class="form-group">
+          <label for="custAddress">Full Address / Location *</label>
+          <textarea id="custAddress" rows="2" placeholder="House/Flat no., street, landmark or location" required></textarea>
+          <div class="loc-row">
+            <button type="button" class="loc-btn" onclick="fetchCurrentLocation()">📍 Share GPS Location</button>
+            <span class="loc-status" id="locStatus">Type address or attach GPS location.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="deliverySlot">Delivery Slot</label>
+          <select id="deliverySlot">
+            <option value="Lunch (12:30 PM - 2:30 PM)">Lunch (12:30 PM - 2:30 PM)</option>
+            <option value="Dinner (7:30 PM - 9:30 PM)">Dinner (7:30 PM - 9:30 PM)</option>
+            <option value="ASAP / Immediate">ASAP / Immediate</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="paymentMode">Payment</label>
+          <select id="paymentMode">
+            <option value="Cash on Delivery">Cash on Delivery</option>
+            <option value="UPI / Online Payment">UPI / Online Payment</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="summary-box" id="finalOrderSummary"></div>
+
+      <button type="button" class="order-btn" onclick="sendWhatsAppOrder()">Order on WhatsApp</button>
+      <p class="note">Complete customer name, phone number, area, and address/location before sending the order to WhatsApp.</p>
+    </div>
+  </div>
+
+  <script>
+    const menuItems = [
+      { id: 1, name: "Vegetable Pulav", price: 130, hasSide: false },
+      { id: 2, name: "Chicken Dum Biryani", price: 140, hasSide: false },
+      { id: 3, name: "Bagara Rice Regular Pack", price: 140, hasSide: true },
+      { id: 4, name: "Chepala Pulusu", price: 150, hasSide: false },
+      { id: 5, name: "Boti Fry", price: 150, hasSide: false },
+      { id: 6, name: "Chicken Pulav", price: 150, hasSide: false },
+      { id: 7, name: "Chicken Pachadi Annam", price: 150, hasSide: false },
+      { id: 8, name: "Ragi Mudda + Kodi Kura", price: 150, hasSide: false },
+      { id: 9, name: "Palakura Kodi Pulav", price: 160, hasSide: false },
+      { id: 10, name: "Gongura Chicken Biryani", price: 160, hasSide: false },
+      { id: 11, name: "Kobbari Pala Bagara Rice", price: 170, hasSide: true },
+      { id: 12, name: "Chitti Mutyalu Chicken Pulav", price: 180, hasSide: false }
+    ];
+
+    let pickedItem = null;
+    let pickedSide = "Chicken Fry";
+    let addedOrder = null;
+    let selectedCombos = 1;
+    let comboDiscount = 0;
+    let gpsLink = "";
+
+    const itemsGrid = document.getElementById("itemsGrid");
+    menuItems.forEach(item => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "item-card";
+      const subText = item.hasSide ? "Select Chicken Fry or Chicken Curry" : "Regular Pack";
+      btn.innerHTML = `
+        <div>
+          <span class="item-name">${item.id}. ${item.name}</span>
+          <span class="item-sub">${subText}</span>
+        </div>
+        <span class="item-price">₹${item.price}</span>
+      `;
+      btn.onclick = () => pickItem(item, btn);
+      itemsGrid.appendChild(btn);
+    });
+
+    function getSelectedRice() {
+      const checked = document.querySelector('input[name="riceType"]:checked');
+      return checked ? checked.value : null;
+    }
+
+    function pickItem(item, btnEl) {
+      document.querySelectorAll(".item-card").forEach(el => el.classList.remove("selected"));
+      btnEl.classList.add("selected");
+      pickedItem = item;
+
+      document.getElementById("sideAndAddBox").style.display = "block";
+      document.getElementById("sideDishBlock").style.display = item.hasSide ? "block" : "none";
+      if (!item.hasSide) {
+        pickedSide = null;
+      } else if (!pickedSide) {
+        pickedSide = "Chicken Fry";
+      }
+    }
+
+    function selectSideDish(side, btnEl) {
+      document.querySelectorAll(".side-btn").forEach(el => el.classList.remove("active"));
+      btnEl.classList.add("active");
+      pickedSide = side;
+    }
+
+    function addItemAndGoToCombos() {
+      const rice = getSelectedRice();
+      if (!rice) {
+        alert("Please select either Bagara Rice or White Rice first.");
+        return;
+      }
+      if (!pickedItem) {
+        alert("Please select an item.");
+        return;
+      }
+
+      addedOrder = {
+        item: pickedItem,
+        rice: rice,
+        side: pickedItem.hasSide ? pickedSide : null
+      };
+
+      const comboSection = document.getElementById("comboAndCheckoutSection");
+      comboSection.style.display = "block";
+      refreshAll();
+      comboSection.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function selectCombo(combos, discount, btnEl) {
+      document.querySelectorAll(".combo-btn").forEach(el => el.classList.remove("active"));
+      btnEl.classList.add("active");
+      selectedCombos = combos;
+      comboDiscount = discount;
+      refreshAll();
+    }
+
+    function calculateTotal() {
+      if (!addedOrder) return 0;
+      const subtotal = addedOrder.item.price * selectedCombos;
+      return Math.max(subtotal - comboDiscount, 0);
+    }
+
+    function fetchCurrentLocation() {
+      const statusEl = document.getElementById("locStatus");
+      const addrEl = document.getElementById("custAddress");
+      if (!navigator.geolocation) {
+        statusEl.textContent = "GPS not supported; please type address.";
+        return;
+      }
+      statusEl.textContent = "Fetching GPS location...";
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          const lat = pos.coords.latitude.toFixed(6);
+          const lng = pos.coords.longitude.toFixed(6);
+          gpsLink = `https://maps.google.com/?q=${lat},${lng}`;
+          statusEl.textContent = "GPS location attached.";
+          if (!addrEl.value.trim()) {
+            addrEl.value = `GPS Location: ${gpsLink}`;
+          }
+        },
+        () => {
+          statusEl.textContent = "Location permission denied; please type address.";
+        }
+      );
+    }
+
+    function refreshAll() {
+      if (!addedOrder) return;
+      const currentRice = getSelectedRice() || addedOrder.rice;
+      addedOrder.rice = currentRice;
+
+      const sideText = addedOrder.side ? ` (${addedOrder.side})` : "";
+      document.getElementById("addedItemSummary").innerHTML = `
+        <strong>Added Item:</strong> ${addedOrder.item.name}${sideText} • <strong>Rice:</strong> ${currentRice} (₹${addedOrder.item.price})
+      `;
+
+      const total = calculateTotal();
+      document.getElementById("finalOrderSummary").innerHTML = `
+        <strong>Item:</strong> ${addedOrder.item.name}${sideText}<br>
+        <strong>Rice:</strong> ${currentRice}<br>
+        <strong>Combo:</strong> ${selectedCombos} Combo(s)<br>
+        <strong>Grand Total:</strong> ₹${total}
+      `;
+    }
+
+    function sendWhatsAppOrder() {
+      if (!addedOrder) {
+        alert("Please add an item and select a combo first.");
+        return;
+      }
+
+      const name = document.getElementById("custName").value.trim();
+      const phoneInput = document.getElementById("custPhone").value.trim();
+      const area = document.getElementById("custArea").value.trim();
+      const address = document.getElementById("custAddress").value.trim();
+      const slot = document.getElementById("deliverySlot").value;
+      const payment = document.getElementById("paymentMode").value;
+
+      if (!name) {
+        alert("Please enter Customer Name.");
+        document.getElementById("custName").focus();
+        return;
+      }
+      if (!phoneInput || phoneInput.length < 10) {
+        alert("Please enter a valid Phone Number.");
+        document.getElementById("custPhone").focus();
+        return;
+      }
+      if (!area) {
+        alert("Please enter Area.");
+        document.getElementById("custArea").focus();
+        return;
+      }
+      if (!address && !gpsLink) {
+        alert("Please enter Address or share GPS Location.");
+        document.getElementById("custAddress").focus();
+        return;
+      }
+
+      const total = calculateTotal();
+      const shopWhatsApp = "919581930401";
+      const sideText = addedOrder.side ? ` - ${addedOrder.side}` : "";
+      const locExtra = gpsLink && !address.includes(gpsLink) ? `\n📍 GPS: ${gpsLink}` : "";
+
+      const message = `🥗 NEW ORDER - AARNIYA'S BIRYANI FEAST
+(100% Home Cooked • No Food Color • No Tasting Salt)
+----------------------------------------
+👤 Customer: ${name}
+📞 Phone: ${phoneInput}
+📍 Area: ${area}
+🏠 Address: ${address}${locExtra}
+⏰ Delivery Slot: ${slot}
+💳 Payment: ${payment}
+----------------------------------------
+🛒 ORDER ITEMS:
+1. ${addedOrder.item.name}${sideText} (${addedOrder.rice}) x ${selectedCombos} = ₹${total}
+----------------------------------------
+💰 GRAND TOTAL: ₹${total}
+(Includes Complimentary Raita & Salan)`;
+
+      const url = `https://wa.me/${shopWhatsApp}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+    }
+  </script>
+</body>
+</html>
